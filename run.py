@@ -1,17 +1,23 @@
-from knn import KNNClassifier
 import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn import datasets
+import matplotlib.pyplot as plt
+from linear_regression import LinearRegression
 
-# Dummy training data
-X_train = np.array([[1, 1], [2, 2], [3, 1], [4, 4], [5, 3]])
-y_train = np.array([0, 0, 1, 1, 1])
+X, y = datasets.make_regression(n_samples=100, n_features=1, noise=20, random_state=4)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1234)
 
-# Dummy test data
-X_test = np.array([[2, 1], [4, 3]])
+fig = plt.figure(figsize=(8,6))
+plt.scatter(X[:,0], y, color = "b", marker = "o", s = 30)
+# plt.show()
 
-# Create and fit the KNN classifier
-knn = KNNClassifier(k=3)
-knn.fit(X_train, y_train)
 
-# Predict labels for the test data
-y_pred = knn.predict(X_test)
-print(y_pred)  # Output: [0. 1.]
+reg = LinearRegression(lr=0.01)
+reg.fit(X_train,y_train)
+predictions = reg.predict(X_test)
+
+def mse(y_test, predictions):
+    return np.mean((y_test - predictions) ** 2)
+
+mse_ = mse(y_test, predictions)
+print(mse_)
